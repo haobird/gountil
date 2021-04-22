@@ -18,27 +18,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spf13/viper"
-
-	"github.com/gin-gonic/gin"
 	"github.com/teris-io/shortid"
 )
 
 //GenShortID 获取随机id
 func GenShortID() (string, error) {
 	return shortid.Generate()
-}
-
-//GetReqID 获取requestid
-func GetReqID(c *gin.Context) string {
-	v, ok := c.Get("X-Request-Id")
-	if !ok {
-		return ""
-	}
-	if requestID, ok := v.(string); ok {
-		return requestID
-	}
-	return ""
 }
 
 //Trim 清除字符串两边空格
@@ -116,7 +101,7 @@ func ParseRequestPacket(buf []byte) (*http.Request, error) {
 }
 
 /** * 字符串首字母转化为大写 ios_bbbbbbbb -> iosBbbbbbbbb */
-func strFirstToUpper(str string) string {
+func FirstToUpper(str string) string {
 	temp := strings.Split(str, ".")
 	var upperStr string
 	for y := 0; y < len(temp); y++ {
@@ -134,13 +119,13 @@ func strFirstToUpper(str string) string {
 }
 
 //dont do this, see above edit
-func prettyprint(b []byte) ([]byte, error) {
+func PrettyPrint(b []byte) ([]byte, error) {
 	var out bytes.Buffer
 	err := json.Indent(&out, b, "", "  ")
 	return out.Bytes(), err
 }
 
-func jsonPrettyPrint(in string) string {
+func JsonPrettyPrint(in string) string {
 	var out bytes.Buffer
 	err := json.Indent(&out, []byte(in), "", "\t")
 	if err != nil {
@@ -182,15 +167,6 @@ func ImageToBase64(path string, isUrl bool, imageType ...string) (string, error)
 		return "", err
 	}
 	return base64.StdEncoding.EncodeToString(data), nil
-}
-
-//GetMinioUrl 获取文件地址
-func GetMinioUrl(fileName string) string {
-	if fileName == "" {
-		return ""
-	}
-	conf := viper.GetStringMap("minio")
-	return fmt.Sprintf("http://%s/%s/%s", conf["endpoint"], conf["bucket"], fileName)
 }
 
 func ToPng(imageBytes []byte) ([]byte, error) {
