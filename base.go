@@ -1,4 +1,4 @@
-package utils
+package goutils
 
 // 辅助函数
 // 不依赖任何项目的独立辅助函数
